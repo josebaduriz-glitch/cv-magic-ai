@@ -1,14 +1,9 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/auth";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function Dashboard() {
-  const session = await auth();
-  if (!session?.user) redirect("/auth/signin");
-
-  return (
-    <main className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold">¡Hola, {session.user.name || "usuario"}!</h1>
-      <p className="text-slate-600 mt-2">Ya estás dentro del dashboard privado.</p>
-    </main>
-  );
+  const session = await getServerSession(authOptions);
+  if (!session) redirect("/api/auth/signin");
+  return <div style={{padding:16}}>Hola, {session?.user?.name ?? "usuario"} 👋</div>;
 }
