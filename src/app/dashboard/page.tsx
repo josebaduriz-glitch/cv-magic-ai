@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { auth } from "next-auth";
+import { auth } from "@/auth";
 
 export default async function Dashboard() {
   const session = await auth();

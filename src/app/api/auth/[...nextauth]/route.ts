@@ -1,15 +1,2 @@
-import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
-
-const handler = NextAuth({
-  secret: process.env.NEXTAUTH_SECRET,
-  session: { strategy: "jwt" }, // sin DB para empezar
-  providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-  ],
-});
-
-export { handler as GET, handler as POST };
+// app/api/auth/[...nextauth]/route.ts  (con o sin src/ delante según tu proyecto)
+export { GET, POST } from "@/auth";
