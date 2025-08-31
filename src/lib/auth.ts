@@ -1,6 +1,6 @@
-// src/auth.ts
-import { type NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+// src/lib/auth.ts
+import type { NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google"; // ejemplo
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -9,5 +9,5 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
-  // aquí puedes añadir callbacks/pages si las necesitas
+  // callbacks, session, pages, etc.
 };
