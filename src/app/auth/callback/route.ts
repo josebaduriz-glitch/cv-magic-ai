@@ -1,7 +1,9 @@
-import { NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { NextResponse, type NextRequest } from 'next/server';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
-export async function GET(req: Request) {
+type CookieSetOptions = CookieOptions;
+
+export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const code = url.searchParams.get('code');
   const next = url.searchParams.get('next') ?? '/dashboard';
@@ -10,6 +12,7 @@ export async function GET(req: Request) {
     return NextResponse.redirect(new URL('/login?error=missing_code', req.url));
   }
 
+  // preparamos la respuesta de redirección para poder ESCRIBIR cookies
   const res = NextResponse.redirect(new URL(next, req.url));
 
   const supabase = createServerClient(
@@ -17,13 +20,13 @@ export async function GET(req: Request) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        // En route handlers, escribimos en la respuesta:
-        get() { return null; }, // leer no es necesario aquí
-        set(name: string, value: string, options: any) {
-          res.cookies.set({ name, value, ...options });
+        // en route handler no necesitamos LEER cookies para este flujo
+        get: (_name: string) => null,
+        set: (name: string, value: string, options?: CookieSetOptions) => {
+          res.cookies.set({ name, value, ...(options ?? {}) });
         },
-        remove(name: string, options: any) {
-          res.cookies.set({ name, value: '', ...options });
+        remove: (name: string, options?: CookieSetOptions) => {
+          res.cookies.set({ name, value: '', ...(options ?? {}) });
         },
       },
     }
@@ -35,6 +38,6 @@ export async function GET(req: Request) {
       new URL(`/login?error=${encodeURIComponent(error.message)}`, req.url)
     );
   }
+
   return res;
 }
-
