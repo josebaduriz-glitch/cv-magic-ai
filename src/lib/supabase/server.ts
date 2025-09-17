@@ -1,9 +1,8 @@
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 
-// 👇 Crea el cliente Supabase que funciona en el servidor
-export function createSupabaseServerClient() {
-  const cookieStore = cookies();
+export async function createSupabaseServerClient() {
+  const cookieStore = await cookies(); // 👈 Next 15: async
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,8 +10,11 @@ export function createSupabaseServerClient() {
     {
       cookies: {
         get(name: string) {
-          return cookieStore.get(name)?.value;
+          return cookieStore.get(name)?.value ?? null;
         },
+        // En Server Components no se pueden escribir cookies:
+        set() {},
+        remove() {},
       },
     }
   );

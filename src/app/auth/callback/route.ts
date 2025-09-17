@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -11,22 +10,20 @@ export async function GET(req: Request) {
     return NextResponse.redirect(new URL('/login?error=missing_code', req.url));
   }
 
-  // Usamos el API cookies() de Next para leer/escribir cookies de sesión
-  const cookieStore = cookies();
+  const res = NextResponse.redirect(new URL(next, req.url));
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
+        // En route handlers, escribimos en la respuesta:
+        get() { return null; }, // leer no es necesario aquí
         set(name: string, value: string, options: any) {
-          cookieStore.set({ name, value, ...options });
+          res.cookies.set({ name, value, ...options });
         },
         remove(name: string, options: any) {
-          cookieStore.set({ name, value: '', ...options });
+          res.cookies.set({ name, value: '', ...options });
         },
       },
     }
@@ -38,6 +35,6 @@ export async function GET(req: Request) {
       new URL(`/login?error=${encodeURIComponent(error.message)}`, req.url)
     );
   }
-
-  return NextResponse.redirect(new URL(next, req.url));
+  return res;
 }
+

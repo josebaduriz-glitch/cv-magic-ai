@@ -5,10 +5,8 @@ import { eq } from 'drizzle-orm';
 import LogoutButton from '@/components/LogoutButton';
 
 export default async function DashboardPage() {
-  const supabase = createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const supabase = await createSupabaseServerClient(); // 👈 await
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     // server redirect simple
