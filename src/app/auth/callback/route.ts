@@ -1,37 +1,23 @@
+// src/app/auth/callback/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
-
-type CookieSetOptions = CookieOptions;
+import { cookies } from 'next/headers';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const code = url.searchParams.get('code');
-  const next = url.searchParams.get('next') ?? '/dashboard';
+  const next = url.searchParams.get('redirect_to') ?? '/dashboard';
 
   if (!code) {
+    // si alguien entra sin code, vuelve al login
     return NextResponse.redirect(new URL('/login?error=missing_code', req.url));
   }
 
-  // preparamos la respuesta de redirección para poder ESCRIBIR cookies
-  const res = NextResponse.redirect(new URL(next, req.url));
+  // En Next 15, usa el almacén de cookies y pásalo envuelto como función
+  const cookieStore = cookies();
+  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        // en route handler no necesitamos LEER cookies para este flujo
-        get: (_name: string) => null,
-        set: (name: string, value: string, options?: CookieSetOptions) => {
-          res.cookies.set({ name, value, ...(options ?? {}) });
-        },
-        remove: (name: string, options?: CookieSetOptions) => {
-          res.cookies.set({ name, value: '', ...(options ?? {}) });
-        },
-      },
-    }
-  );
-
+  // Intercambia el code (PKCE) por la sesión y escribe las cookies
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
     return NextResponse.redirect(
@@ -39,5 +25,6 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  return res;
+  // Redirige ya logueado
+  return NextResponse.redirect(new URL(next, req.url));
 }
