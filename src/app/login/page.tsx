@@ -18,6 +18,8 @@ export default function LoginPage() {
         ? window.location.origin
         : process.env.NEXT_PUBLIC_SITE_URL!;
 
+    const redirectBase = process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin; 
+    
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
