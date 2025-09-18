@@ -1,35 +1,56 @@
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+// src/app/dashboard/page.tsx
+import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+
+// (opcional) Drizzle si quieres leer el perfil
 import { db } from '@/db/client';
 import { profiles } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import LogoutButton from '@/components/LogoutButton';
 
 export default async function DashboardPage() {
-  const supabase = await createSupabaseServerClient(); // 👈 await
-  const { data: { user } } = await supabase.auth.getUser();
+  // 👇 PASO CLAVE: pasa una función ASÍNCRONA que devuelva las cookies
+  const supabase = createServerComponentClient({
+    cookies: async () => await cookies(),
+  });
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    // server redirect simple
-    return (
-      <div className="p-6">
-        <p>Necesitas iniciar sesión.</p>
-        <a className="underline" href="/login">Ir al login</a>
-      </div>
-    );
+    redirect('/login');
   }
 
-  const rows = await db.select().from(profiles).where(eq(profiles.id, user.id));
-  const profile = rows[0];
+  // --- Opcional: leer perfil desde tu DB con Drizzle ---
+  let profile: { fullName: string | null; onboarded: boolean | null } | null = null;
+  try {
+    const rows = await db
+      .select({
+        fullName: profiles.fullName,
+        onboarded: profiles.onboarded,
+      })
+      .from(profiles)
+      .where(eq(profiles.id, user.id));
+    profile = rows[0] ?? null;
+  } catch {
+    // si falla DB, mostramos solo el email
+  }
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-6 space-y-2">
       <h1 className="text-2xl font-semibold">
         Hola {profile?.fullName ?? user.email}
       </h1>
-      <p className="opacity-70">Onboarded: {String(profile?.onboarded)}</p>
-
-      {/* Botón de logout (cliente) */}
-      <LogoutButton />
+      {profile && (
+        <p className="opacity-70">Onboarded: {String(profile.onboarded)}</p>
+      )}
+      <a
+        href="/api/auth/logout"
+        className="inline-block mt-4 rounded bg-red-600 px-4 py-2 text-white"
+      >
+        Cerrar sesión
+      </a>
     </div>
   );
 }
