@@ -12,9 +12,10 @@ export default function LoginPage() {
     setLoading(true);
     setMsg(null);
 
+
+
     const supabase = supabaseBrowser();
-    const redirectBase =
-      process.env.NEXT_PUBLIC_SITE_URL || window.location.origin; // 👈 fija dominio
+    const redirectBase = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;// 👈 fija dominio
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
