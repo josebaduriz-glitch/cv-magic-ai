@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['pg'],
-  },
-  // opcional si no quieres que ESLint/TS rompan el build por warnings
+  // ✅ nueva clave en Next 15
+  serverExternalPackages: ['pg'],
+
+  // Opcional: no bloquees el build por lint si te molesta
   // eslint: { ignoreDuringBuilds: true },
   // typescript: { ignoreBuildErrors: false },
 };
+
 module.exports = nextConfig;

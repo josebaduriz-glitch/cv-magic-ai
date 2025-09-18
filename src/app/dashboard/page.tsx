@@ -2,6 +2,7 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import Link from 'next/link'; // ⬅️ añade esto arriba
 
 // (opcional) Drizzle si quieres leer el perfil
 import { db } from '@/db/client';
@@ -45,12 +46,12 @@ export default async function DashboardPage() {
       {profile && (
         <p className="opacity-70">Onboarded: {String(profile.onboarded)}</p>
       )}
-      <a
+      <link
         href="/api/auth/logout"
         className="inline-block mt-4 rounded bg-red-600 px-4 py-2 text-white"
       >
         Cerrar sesión
-      </a>
+      </link>
     </div>
   );
 }
