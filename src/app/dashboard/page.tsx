@@ -1,18 +1,17 @@
 // src/app/dashboard/page.tsx
-import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import Link from 'next/link'; // ⬅️ añade esto arriba
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// (opcional) Drizzle si quieres leer el perfil
+import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+
+// (opcional) Drizzle para el perfil
 import { db } from '@/db/client';
 import { profiles } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
 export default async function DashboardPage() {
-  // 👇 PASO CLAVE: pasa una función ASÍNCRONA que devuelva las cookies
   const supabase = createServerComponentClient({ cookies });
 
   const {
@@ -23,7 +22,6 @@ export default async function DashboardPage() {
     redirect('/login');
   }
 
-  // --- Opcional: leer perfil desde tu DB con Drizzle ---
   let profile: { fullName: string | null; onboarded: boolean | null } | null = null;
   try {
     const rows = await db
@@ -35,23 +33,21 @@ export default async function DashboardPage() {
       .where(eq(profiles.id, user.id));
     profile = rows[0] ?? null;
   } catch {
-    // si falla DB, mostramos solo el email
+    // si falla DB, continuamos mostrando solo el email
   }
 
   return (
-    <div className="p-6 space-y-2">
+    <div className="p-6 space-y-3">
       <h1 className="text-2xl font-semibold">
         Hola {profile?.fullName ?? user.email}
       </h1>
-      {profile && (
-        <p className="opacity-70">Onboarded: {String(profile.onboarded)}</p>
-      )}
-      <link
-        href="/api/auth/logout"
-        className="inline-block mt-4 rounded bg-red-600 px-4 py-2 text-white"
-      >
-        Cerrar sesión
-      </link>
+
+      {/* Logout sin JS del cliente (form GET a route handler) */}
+      <form action="/api/auth/logout" method="GET">
+        <button className="rounded bg-red-600 px-4 py-2 text-white">
+          Cerrar sesión
+        </button>
+      </form>
     </div>
   );
 }
