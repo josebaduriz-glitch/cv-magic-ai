@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import Link from 'next/link'; // ⬅️ añade esto arriba
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 // (opcional) Drizzle si quieres leer el perfil
 import { db } from '@/db/client';
@@ -11,9 +13,7 @@ import { eq } from 'drizzle-orm';
 
 export default async function DashboardPage() {
   // 👇 PASO CLAVE: pasa una función ASÍNCRONA que devuelva las cookies
-  const supabase = createServerComponentClient({
-    cookies: async () => await cookies(),
-  });
+  const supabase = createServerComponentClient({ cookies });
 
   const {
     data: { user },
