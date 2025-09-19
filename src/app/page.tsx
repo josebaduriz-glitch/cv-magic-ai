@@ -1,7 +1,22 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import { Sparkles, CheckCircle2, FileText, ShieldCheck, Zap, Globe, ArrowRight, Stars, Wand2, LayoutGrid, Languages } from "lucide-react";
+import {
+  Sparkles,
+  CheckCircle2,
+  FileText,
+  ShieldCheck,
+  Zap,
+  Globe,
+  ArrowRight,
+  Stars,
+  Wand2,
+  LayoutGrid,
+  Languages,
+} from "lucide-react";
+
+// Stripe Payment Link (configúralo en Vercel como NEXT_PUBLIC_STRIPE_LINK)
+const STRIPE_LINK = process.env.NEXT_PUBLIC_STRIPE_LINK || "#";
 
 export default function Page() {
   return (
@@ -9,7 +24,7 @@ export default function Page() {
       {/* Navbar */}
       <header className="sticky top-0 z-50 bg-white/70 backdrop-blur border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <a href="#" className="flex items-center gap-2 font-semibold text-lg">
+          <a href="/" className="flex items-center gap-2 font-semibold text-lg">
             <Sparkles className="w-5 h-5" />
             CVMagic <span className="text-amber-500">AI</span>
           </a>
@@ -20,8 +35,18 @@ export default function Page() {
             <a href="#faq" className="hover:opacity-80">FAQ</a>
           </nav>
           <div className="flex items-center gap-2">
-            <a href="#demo" className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-2xl border bg-white hover:shadow">Probar demo</a>
-            <a href="#pricing" className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-black text-white hover:opacity-90">Empieza gratis <ArrowRight className="w-4 h-4"/></a>
+            <a
+              href="/app/new"
+              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-2xl border bg-white hover:shadow"
+            >
+              Probar demo
+            </a>
+            <a
+              href="/login"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-black text-white hover:opacity-90"
+            >
+              Entrar <ArrowRight className="w-4 h-4" />
+            </a>
           </div>
         </div>
       </header>
@@ -29,18 +54,29 @@ export default function Page() {
       {/* Hero */}
       <section className="max-w-6xl mx-auto px-4 pt-16 pb-10 grid md:grid-cols-2 gap-10 items-center">
         <div>
-          <motion.h1 initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{duration:0.4}} className="text-4xl md:text-5xl font-bold tracking-tight">
+          <motion.h1
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="text-4xl md:text-5xl font-bold tracking-tight"
+          >
             Crea <span className="underline decoration-amber-400 decoration-4 underline-offset-4">CVs y Cartas</span> con IA en segundos
           </motion.h1>
-          <p className="mt-4 text-lg text-slate-600">Resultados profesionales, listos para ATS, en español o inglés. Ahorra horas de edición y postula con confianza.</p>
+          <p className="mt-4 text-lg text-slate-600">
+            Resultados profesionales, listos para ATS, en español o inglés. Ahorra horas de edición y postula con confianza.
+          </p>
           <ul className="mt-6 space-y-2 text-slate-700">
             <li className="flex gap-2 items-start"><CheckCircle2 className="w-5 h-5 mt-0.5"/> Adaptación al puesto y sector</li>
             <li className="flex gap-2 items-start"><CheckCircle2 className="w-5 h-5 mt-0.5"/> Exporta a PDF y DOCX</li>
             <li className="flex gap-2 items-start"><CheckCircle2 className="w-5 h-5 mt-0.5"/> Plantillas optimizadas por ATS</li>
           </ul>
           <div className="mt-6 flex gap-3">
-            <a href="#demo" className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-black text-white hover:opacity-90">Probar gratis</a>
-            <a href="#pricing" className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border bg-white hover:shadow">Ver planes</a>
+            <a href="/app/new" className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-blue-600 text-white hover:opacity-90">
+              Crear CV gratis
+            </a>
+            <a href="/pricing" className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border bg-white hover:shadow">
+              Ver planes
+            </a>
           </div>
           <p className="mt-3 text-xs text-slate-500">*Sin tarjeta en el plan gratuito</p>
         </div>
@@ -70,7 +106,7 @@ export default function Page() {
       <section className="max-w-6xl mx-auto px-4 pb-2">
         <div className="text-center text-sm text-slate-500">Compatible con sistemas ATS populares</div>
         <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3 opacity-70">
-          {["Greenhouse","Lever","Workday","SAP SuccessFactors"].map((l) => (
+          {["Greenhouse", "Lever", "Workday", "SAP SuccessFactors"].map((l) => (
             <div key={l} className="rounded-xl border p-3 text-center">{l}</div>
           ))}
         </div>
@@ -118,12 +154,12 @@ export default function Page() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div>
               <h3 className="text-xl font-semibold">Demo interactiva</h3>
-              <p className="text-slate-600">Este bloque se integra con tu componente real o un iframe de tu app /dashboard.</p>
+              <p className="text-slate-600">Este bloque se integra con tu generador real.</p>
             </div>
-            <a href="#" className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-black text-white">Abrir demo</a>
+            <a href="/app/new" className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-black text-white">Abrir demo</a>
           </div>
           <div className="mt-5 h-64 rounded-xl border bg-slate-50 grid place-items-center text-slate-500">
-            <span>Área de demo (embed)</span>
+            <span>Área de demo (preview)</span>
           </div>
         </div>
       </section>
@@ -132,9 +168,30 @@ export default function Page() {
       <section id="pricing" className="max-w-6xl mx-auto px-4 py-12">
         <h2 className="text-2xl font-bold">Planes sencillos</h2>
         <div className="mt-6 grid md:grid-cols-3 gap-6">
-          <PricingCard name="Gratis" price="0€" cta="Empezar" highlight={false} items={["1 documento de prueba","Copia al portapapeles","Sin tarjeta"]}/>
-          <PricingCard name="Básico" price="5€/mes" cta="Suscribirme" highlight items={["Ilimitado","Exportar PDF/DOCX","2 idiomas"]}/>
-          <PricingCard name="Pro" price="10€/mes" cta="Elegir Pro" highlight={false} items={["Plantillas premium","Historial y guardado","Soporte prioritario"]}/>
+          <PricingCard
+            name="Gratis"
+            price="0€"
+            cta="Empezar"
+            href="/app/new"
+            highlight={false}
+            items={["1 documento de prueba", "Copia al portapapeles", "Sin tarjeta"]}
+          />
+          <PricingCard
+            name="Básico"
+            price="5€/mes"
+            cta="Suscribirme"
+            href={STRIPE_LINK}
+            highlight
+            items={["Ilimitado", "Exportar PDF/DOCX", "2 idiomas"]}
+          />
+          <PricingCard
+            name="Pro"
+            price="10€/mes"
+            cta="Elegir Pro"
+            href={STRIPE_LINK}
+            highlight={false}
+            items={["Plantillas premium", "Historial y guardado", "Soporte prioritario"]}
+          />
         </div>
       </section>
 
@@ -144,10 +201,10 @@ export default function Page() {
           <h2 className="text-2xl font-bold">Lo que dicen nuestros usuarios</h2>
           <div className="mt-6 grid md:grid-cols-3 gap-6">
             {[
-              {name:'Lucía', text:'Conseguí entrevistas en 1 semana. El CV quedó increíble.'},
-              {name:'Javier', text:'Ahorra muchísimo tiempo. La carta sale lista para enviar.'},
-              {name:'Elena', text:'Me encantó poder cambiar el tono y el idioma al instante.'},
-            ].map((t, i)=> (
+              { name: "Lucía", text: "Conseguí entrevistas en 1 semana. El CV quedó increíble." },
+              { name: "Javier", text: "Ahorra muchísimo tiempo. La carta sale lista para enviar." },
+              { name: "Elena", text: "Me encantó poder cambiar el tono y el idioma al instante." },
+            ].map((t, i) => (
               <div key={i} className="rounded-2xl border p-5 bg-white shadow-sm">
                 <div className="font-semibold">{t.name}</div>
                 <p className="text-slate-600 mt-1">“{t.text}”</p>
@@ -161,21 +218,34 @@ export default function Page() {
       <section id="faq" className="max-w-6xl mx-auto px-4 pb-16">
         <h2 className="text-2xl font-bold">Preguntas frecuentes</h2>
         <div className="mt-6 grid md:grid-cols-2 gap-6">
-          <FAQ q="¿Necesito tarjeta para probar?" a="No. El plan gratuito permite generar un documento de muestra."/>
-          <FAQ q="¿Puedo editar el resultado?" a="Sí. Puedes copiar/pegar o exportar y editar libremente."/>
-          <FAQ q="¿Qué idiomas admite?" a="De salida: español e inglés."/>
-          <FAQ q="¿Cómo funciona el pago?" a="Suscripciones seguras con Stripe; cancela cuando quieras."/>
+          <FAQ q="¿Necesito tarjeta para probar?" a="No. El plan gratuito permite generar un documento de muestra." />
+          <FAQ q="¿Puedo editar el resultado?" a="Sí. Puedes copiar/pegar o exportar y editar libremente." />
+          <FAQ q="¿Qué idiomas admite?" a="De salida: español e inglés." />
+          <FAQ q="¿Cómo funciona el pago?" a="Suscripciones seguras con Stripe; cancela cuando quieras." />
         </div>
-        <footer className="mt-10 text-center text-sm text-slate-500">© {new Date().getFullYear()} CVMagic AI</footer>
+        <footer className="mt-10 text-center text-sm text-slate-500">
+          © {new Date().getFullYear()} CVMagic AI
+        </footer>
       </section>
     </div>
   );
 }
 
-function Feature({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function Feature({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="rounded-2xl border shadow-sm p-6 bg-white">
-      <div className="flex items-center gap-2 font-semibold"><span className="text-amber-500">{icon}</span>{title}</div>
+      <div className="flex items-center gap-2 font-semibold">
+        <span className="text-amber-500">{icon}</span>
+        {title}
+      </div>
       <p className="mt-2 text-slate-600">{children}</p>
     </div>
   );
@@ -191,19 +261,53 @@ function Step({ n, title, children }: { n: string; title: string; children: Reac
   );
 }
 
-function PricingCard({ name, price, items, cta, highlight }: { name: string; price: string; items: string[]; cta: string; highlight?: boolean }) {
+function PricingCard({
+  name,
+  price,
+  items,
+  cta,
+  href,
+  highlight,
+}: {
+  name: string;
+  price: string;
+  items: string[];
+  cta: string;
+  href: string;
+  highlight?: boolean;
+}) {
+  const isExternal = href.startsWith("http");
   return (
-    <div className={`rounded-2xl border shadow-sm p-6 bg-white ${highlight ? 'ring-2 ring-amber-400' : ''}`}>
+    <div className={`rounded-2xl border shadow-sm p-6 bg-white ${highlight ? "ring-2 ring-amber-400" : ""}`}>
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-lg">{name}</h3>
       </div>
       <div className="text-3xl font-bold mt-2">{price}</div>
       <ul className="mt-4 space-y-2 text-slate-700">
         {items.map((f, i) => (
-          <li key={i} className="flex items-start gap-2"><CheckCircle2 className="w-5 h-5 mt-0.5"/>{f}</li>
+          <li key={i} className="flex items-start gap-2">
+            <CheckCircle2 className="w-5 h-5 mt-0.5" />
+            {f}
+          </li>
         ))}
       </ul>
-      <button className="mt-5 w-full rounded-2xl bg-black text-white py-3">{cta}</button>
+      {isExternal ? (
+        <a
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-5 block w-full rounded-2xl bg-black text-white py-3 text-center"
+        >
+          {cta}
+        </a>
+      ) : (
+        <a
+          href={href}
+          className="mt-5 block w-full rounded-2xl bg-black text-white py-3 text-center"
+        >
+          {cta}
+        </a>
+      )}
     </div>
   );
 }
