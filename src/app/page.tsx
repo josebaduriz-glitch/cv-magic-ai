@@ -1,4 +1,5 @@
 "use client";
+import Link from 'next/link';
 import React from "react";
 import { motion } from "framer-motion";
 import {
@@ -24,10 +25,10 @@ export default function Page() {
       {/* Navbar */}
       <header className="sticky top-0 z-50 bg-white/70 backdrop-blur border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2 font-semibold text-lg">
+          <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
             <Sparkles className="w-5 h-5" />
             CVMagic <span className="text-amber-500">AI</span>
-          </a>
+          </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm">
             <a href="#features" className="hover:opacity-80">Características</a>
             <a href="#how" className="hover:opacity-80">Cómo funciona</a>
@@ -35,18 +36,18 @@ export default function Page() {
             <a href="#faq" className="hover:opacity-80">FAQ</a>
           </nav>
           <div className="flex items-center gap-2">
-            <a
+            <Link
               href="/app/new"
               className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-2xl border bg-white hover:shadow"
             >
               Probar demo
-            </a>
-            <a
+            </Link>
+            <Link
               href="/login"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-black text-white hover:opacity-90"
             >
               Entrar <ArrowRight className="w-4 h-4" />
-            </a>
+            </Link>
           </div>
         </div>
       </header>
@@ -71,12 +72,12 @@ export default function Page() {
             <li className="flex gap-2 items-start"><CheckCircle2 className="w-5 h-5 mt-0.5"/> Plantillas optimizadas por ATS</li>
           </ul>
           <div className="mt-6 flex gap-3">
-            <a href="/app/new" className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-blue-600 text-white hover:opacity-90">
+            <Link href="/app/new" className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-blue-600 text-white hover:opacity-90">
               Crear CV gratis
-            </a>
-            <a href="/pricing" className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border bg-white hover:shadow">
+            </Link>
+            <Link href="/pricing" className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border bg-white hover:shadow">
               Ver planes
-            </a>
+            </Link>
           </div>
           <p className="mt-3 text-xs text-slate-500">*Sin tarjeta en el plan gratuito</p>
         </div>
