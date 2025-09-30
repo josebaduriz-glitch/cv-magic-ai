@@ -17,17 +17,39 @@ export default function NewCVPage() {
 Empresa Y — Becario (2021–2022)
 - Logro 1
 - Logro 2`);
-  const [education, setEducation] = useState(`Grado en Informática — Univ. Z (2017–2021)`);
-  const printRef = useRef<HTMLDivElement>(null);
+  const [loadingAI, setLoadingAI] = useState(false);
 
+  const printRef = useRef<HTMLDivElement>(null);
   const skillsArr = useMemo(
     () => skills.split(',').map(s => s.trim()).filter(Boolean),
     [skills]
   );
 
   const handleDownload = () => {
-    // versión simple: usa imprimir a PDF del navegador
-    window.print();
+    window.print(); // imprime la vista → Guardar como PDF
+  };
+
+  const handleGenerateAI = async () => {
+    try {
+      setLoadingAI(true);
+      const res = await fetch('/api/ai/summary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          title,
+          skills,
+          experience,
+        }),
+      });
+      if (!res.ok) throw new Error('Error al generar resumen');
+      const data = await res.json();
+      setSummary(data.summary);
+    } catch (e) {
+      alert('No se pudo generar el resumen. Revisa tu clave de OpenAI en el servidor.');
+    } finally {
+      setLoadingAI(false);
+    }
   };
 
   return (
@@ -40,21 +62,26 @@ Empresa Y — Becario (2021–2022)
             <input className="col-span-2 rounded border p-2" value={name} onChange={e=>setName(e.target.value)} placeholder="Nombre completo" />
             <input className="col-span-2 rounded border p-2" value={title} onChange={e=>setTitle(e.target.value)} placeholder="Título profesional" />
             <textarea className="col-span-2 h-24 rounded border p-2" value={summary} onChange={e=>setSummary(e.target.value)} placeholder="Resumen" />
+
+            <div className="col-span-2 flex gap-2">
+              <button
+                onClick={handleGenerateAI}
+                disabled={loadingAI}
+                className="rounded bg-emerald-600 px-3 py-2 text-white"
+                type="button"
+              >
+                {loadingAI ? 'Generando…' : 'Generar CV con IA (resumen)'}
+              </button>
+              <button onClick={handleDownload} className="rounded bg-blue-600 px-3 py-2 text-white" type="button">
+                Descargar PDF
+              </button>
+            </div>
+
             <input className="rounded border p-2" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" />
             <input className="rounded border p-2" value={phone} onChange={e=>setPhone(e.target.value)} placeholder="Teléfono" />
             <input className="col-span-2 rounded border p-2" value={location} onChange={e=>setLocation(e.target.value)} placeholder="Ubicación" />
             <input className="col-span-2 rounded border p-2" value={skills} onChange={e=>setSkills(e.target.value)} placeholder="Habilidades (separadas por comas)" />
             <textarea className="col-span-2 h-32 rounded border p-2" value={experience} onChange={e=>setExperience(e.target.value)} placeholder="Experiencia (viñetas)" />
-            <textarea className="col-span-2 h-24 rounded border p-2" value={education} onChange={e=>setEducation(e.target.value)} placeholder="Educación" />
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button onClick={handleDownload} className="rounded bg-blue-600 px-4 py-2 text-white">
-              Descargar PDF
-            </button>
-            <a href="/pricing" className="rounded border px-4 py-2">
-              Pro: plantillas premium
-            </a>
           </div>
         </section>
 
@@ -66,7 +93,7 @@ Empresa Y — Becario (2021–2022)
             <div className="mt-2 text-sm text-gray-600">{email} · {phone} · {location}</div>
 
             <h2 className="mt-6 text-xl font-semibold">Resumen</h2>
-            <p className="mt-1 leading-relaxed text-gray-800">{summary}</p>
+            <p className="mt-1 leading-relaxed text-gray-800 whitespace-pre-wrap">{summary}</p>
 
             <h2 className="mt-6 text-xl font-semibold">Habilidades</h2>
             <ul className="mt-2 flex flex-wrap gap-2">
@@ -77,9 +104,6 @@ Empresa Y — Becario (2021–2022)
 
             <h2 className="mt-6 text-xl font-semibold">Experiencia</h2>
             <pre className="mt-2 whitespace-pre-wrap leading-relaxed text-gray-800">{experience}</pre>
-
-            <h2 className="mt-6 text-xl font-semibold">Educación</h2>
-            <pre className="mt-2 whitespace-pre-wrap leading-relaxed text-gray-800">{education}</pre>
           </div>
         </section>
       </div>
