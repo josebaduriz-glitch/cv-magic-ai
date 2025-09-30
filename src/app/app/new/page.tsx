@@ -45,7 +45,7 @@ Empresa Y — Becario (2021–2022)
       if (!res.ok) throw new Error('Error al generar resumen');
       const data = await res.json();
       setSummary(data.summary);
-    } catch (e) {
+    } catch (_e) {
       alert('No se pudo generar el resumen. Revisa tu clave de OpenAI en el servidor.');
     } finally {
       setLoadingAI(false);

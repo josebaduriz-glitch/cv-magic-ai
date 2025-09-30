@@ -22,7 +22,6 @@ ${experience}
       return NextResponse.json({ error: 'Falta OPENAI_API_KEY en el servidor' }, { status: 500 });
     }
 
-    // Llama a OpenAI Chat Completions (modelo ligero para velocidad/coste)
     const r = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -41,15 +40,19 @@ ${experience}
     });
 
     if (!r.ok) {
-      const err = await r.text();
-      return NextResponse.json({ error: 'OpenAI error', details: err }, { status: 500 });
+      const errText = await r.text();
+      return NextResponse.json({ error: 'OpenAI error', details: errText }, { status: 500 });
     }
 
-    const data = await r.json();
-    const summary = data.choices?.[0]?.message?.content?.trim() || '';
+    const data: {
+      choices?: { message?: { content?: string } }[];
+    } = await r.json();
+
+    const summary = data.choices?.[0]?.message?.content?.trim() ?? '';
 
     return NextResponse.json({ summary });
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message || 'Error' }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Error inesperado';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
